@@ -20,9 +20,12 @@ class MlpModel(DynamicsModel):
     ):
         super().__init__(env=env, **kwargs)
         self.env = env
-        self.input_dim = len(env.observation_space.shape)
-        self.action_dim = len(env.action_space.shape)
-        self.next_obs_dim = len(env.observation_space.shape)
+        obs_dim = int(np.prod(env.observation_space.shape))
+        action_dim = int(np.prod(env.action_space.shape))
+
+        self.input_dim = obs_dim
+        self.action_dim = action_dim
+        self.next_obs_dim = obs_dim
 
         self.n_layers = n_layers
         self.hidden_layer_size = hidden_layer_size
