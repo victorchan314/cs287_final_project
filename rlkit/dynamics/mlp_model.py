@@ -2,35 +2,26 @@ import numpy as np
 
 import torch
 import torch.optim as optim
-from torch import nn as nn
 
 from rlkit.dynamics.model import DynamicsModel
 from rlkit.torch.networks import FlattenMlp
 
-class MlpModel(nn.Module, DynamicsModel):
+
+class MlpModel(DynamicsModel):
     def __init__(
             self,
             env,
-            input_dim,
-            action_dim,
-            next_obs_dim,
             n_layers=3,
             hidden_layer_size=64,
-            optimizer_class=optim.Adam
+            optimizer_class=optim.Adam,
             learning_rate=1e-3,
             **kwargs
     ):
-        super().__init__(
-            env=env,
-            input_dim=input_dim,
-            action_dim=action_dim,
-            next_obs_dim=next_obs_dim,
-            **kwargs
-        )
+        super().__init__(env=env, **kwargs)
         self.env = env
-        self.input_dim = input_dim
-        self.action_dim = action_dim
-        self.next_obs_dim = next_obs_dim
+        self.input_dim = len(env.observation_space.shape)
+        self.action_dim = len(env.action_space.shape)
+        self.next_obs_dim = len(env.observation_space.shape)
 
         self.n_layers = n_layers
         self.hidden_layer_size = hidden_layer_size
@@ -43,8 +34,8 @@ class MlpModel(nn.Module, DynamicsModel):
 
         self.net = FlattenMlp(
             hidden_sizes=[hidden_layer_size] * n_layers,
-            input_size=input_dim + action_dim,
-            output_size=next_obs_dim + reward_dim,
+            input_size=self.input_dim + self.action_dim,
+            output_size=self.next_obs_dim + self.reward_dim,
         )
         self.net_optimizer = optmizer_class(self.net.parameters(), lr=learning_rate)
 

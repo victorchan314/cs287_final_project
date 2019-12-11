@@ -107,7 +107,7 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
                 num_train_steps_per_itr=dyna_num_train_steps_per_itr,
                 tandem_train=dyna_tandem_train,
                 n_layers=dyna_n_layers,
-                hidden_layer_size=hidden_layer_size,
+                hidden_layer_size=dyna_hidden_layer_size,
                 learning_rate=dyna_learning_rate,
             )
         else:

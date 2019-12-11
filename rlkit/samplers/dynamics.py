@@ -19,7 +19,7 @@ class DynamicsSampler(object):
         self.num_train_steps_per_itr = num_train_steps_per_itr
         self.tandem_train = tandem_train
 
-        self.model = MlpModel(**kwargs)
+        self.model = MlpModel(env, **kwargs)
         self.training = True
 
     def start_worker(self):
