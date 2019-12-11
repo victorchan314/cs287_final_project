@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 
+import rlkit.torch.pytorch_util as ptu
 from rlkit.dynamics.model import DynamicsModel
 from rlkit.torch.networks import FlattenMlp
 
@@ -37,10 +38,12 @@ class MlpModel(DynamicsModel):
             input_size=self.input_dim + self.action_dim,
             output_size=self.next_obs_dim + self.reward_dim,
         )
-        self.net_optimizer = optmizer_class(self.net.parameters(), lr=learning_rate)
+        self.net_optimizer = optimizer_class(self.net.parameters(), lr=learning_rate)
 
     def _forward(self, state, action):
-        output = self.net(self.state, action)
+        s = torch.from_numpy(state).float()
+        a = torch.from_numpy(action).float()
+        output = self.net(s, a)
         next_state = output[:, :-self.reward_dim]
         reward = output[:, -self.reward_dim:]
 
@@ -62,7 +65,7 @@ class MlpModel(DynamicsModel):
         next_states = paths["next_observations"]
         terminals = paths["terminals"]
 
-        next_state_preds, reward_preds, terminal_preds, env_infos = self.forward(states, actions)
+        next_state_preds, reward_preds, terminal_preds, env_infos = self._forward(states, actions)
         self.net_optimizer.zero_grad()
 
         net_loss = torch.mean((next_state_preds - next_states) ** 2) + torch.mean((reward_preds - rewards) ** 2)

@@ -9,7 +9,7 @@ class DynamicsModel(object):
         pass
 
     def reset(self):
-        return env.reset()
+        return self.env.reset()
 
     def seed(self):
         raise NotImplementedError

@@ -38,7 +38,7 @@ class DynamicsSampler(object):
             if self.training:
                 for i in range(self.num_train_steps_per_itr):
                     path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
-                    self.model.train(paths)
+                    self.model.train(path)
             else:
                 path = rollout(self.model, policy, max_path_length=self.max_path_length, accum_context=accum_context)
 
