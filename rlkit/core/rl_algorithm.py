@@ -8,6 +8,7 @@ import numpy as np
 from rlkit.core import logger, eval_util
 from rlkit.data_management.env_replay_buffer import MultiTaskReplayBuffer
 from rlkit.data_management.path_builder import PathBuilder
+from rlkit.samplers.dynamics import DynamicsSampler
 from rlkit.samplers.in_place import InPlacePathSampler
 from rlkit.torch import pytorch_util as ptu
 
@@ -46,6 +47,9 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
             render_eval_paths=False,
             dump_eval_paths=False,
             plotter=None,
+            dyna=False,
+            dyna_switch_iter=50,
+            dyna_tandem_train=True,
     ):
         """
         :param env: training env
@@ -90,11 +94,18 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
         self.dump_eval_paths = dump_eval_paths
         self.plotter = plotter
 
-        self.sampler = InPlacePathSampler(
-            env=env,
-            policy=agent,
-            max_path_length=self.max_path_length,
-        )
+        if dyna:
+            self.sampler = DynamicsSampler(
+                env=env,
+                policy=agent,
+                max_path_length=self.max_path_length,
+            )
+        else:
+            self.sampler = InPlacePathSampler(
+                env=env,
+                policy=agent,
+                max_path_length=self.max_path_length,
+            )
 
         # separate replay buffers for
         # - training RL update
