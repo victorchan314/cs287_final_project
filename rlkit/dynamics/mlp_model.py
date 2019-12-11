@@ -58,8 +58,8 @@ class MlpModel(DynamicsModel):
         next_state, reward, terminal, env_info = self._forward(self.state, action)
         self.state = next_state
 
-        next_state = ptu.get_numpy(next_state)
-        reward = ptu.get_numpy(reward)
+        next_state = np.squeeze(ptu.get_numpy(next_state))
+        reward = np.squeeze(ptu.get_numpy(reward))
 
         return next_state, reward, terminal, env_info
 
