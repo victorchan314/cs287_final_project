@@ -48,8 +48,12 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
             dump_eval_paths=False,
             plotter=None,
             dyna=False,
-            dyna_switch_iter=50,
+            dyna_num_train_itr=50,
+            dyna_num_train_steps_per_itr=50,
             dyna_tandem_train=True,
+            dyna_n_layers=3,
+            dyna_hidden_layer_size=64,
+            dyna_learning_rate=1e-3,
     ):
         """
         :param env: training env
@@ -99,6 +103,12 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
                 env=env,
                 policy=agent,
                 max_path_length=self.max_path_length,
+                num_train_itr=dyna_num_train_itr,
+                num_train_steps_per_itr=dyna_num_train_steps_per_itr,
+                tandem_train=dyna_tandem_train,
+                n_layers=dyna_n_layers,
+                hidden_layer_size=hidden_layer_size,
+                learning_rate=dyna_learning_rate,
             )
         else:
             self.sampler = InPlacePathSampler(

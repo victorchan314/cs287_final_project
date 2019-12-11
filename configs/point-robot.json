@@ -17,7 +17,10 @@
         "reward_scale": 100.0,
         "kl_lambda": 0.1,
         "dyna": "True",
-        "dyna_switch_iter": 10,
-        "dyna_tandem_train": "True"
+        "dyna_num_train_itr": 50,
+        "dyna_num_train_steps_per_itr": 50,
+        "dyna_tandem_train": "False",
+        "dyna_n_layers": 3,
+        "dyna_hidden_layer_size": 64
     }
 }
