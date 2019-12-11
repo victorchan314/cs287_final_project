@@ -44,9 +44,7 @@ class MlpModel(DynamicsModel):
         self.net_optimizer = optimizer_class(self.net.parameters(), lr=learning_rate)
 
     def _forward(self, state, action):
-        s = state
-        a = action
-        output = self.net(s, a)
+        output = self.net(state, action)
         next_state = output[:, :-self.reward_dim]
         reward = output[:, -self.reward_dim:]
 
@@ -59,6 +57,9 @@ class MlpModel(DynamicsModel):
         action = torch.from_numpy(action[np.newaxis, :]).float()
         next_state, reward, terminal, env_info = self._forward(self.state, action)
         self.state = next_state
+
+        next_state = ptu.get_numpy(next_state)
+        reward = ptu.get_numpy(reward)
 
         return next_state, reward, terminal, env_info
 
