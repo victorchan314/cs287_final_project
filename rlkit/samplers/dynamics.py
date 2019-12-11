@@ -20,7 +20,7 @@ class DynamicsSampler(object):
         self.tandem_train = tandem_train
 
         self.model = MlpModel(env, **kwargs)
-        self.training = True
+        self.itr = 0
 
     def start_worker(self):
         pass
@@ -35,7 +35,7 @@ class DynamicsSampler(object):
         n_steps_total = 0
         n_trajs = 0
         while n_steps_total < max_samples and n_trajs < max_trajs:
-            if self.training:
+            if self.itr <= self.num_train_itr:
                 for i in range(self.num_train_steps_per_itr):
                     path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
                     self.model.train(path)
@@ -51,8 +51,7 @@ class DynamicsSampler(object):
             if n_trajs % resample == 0:
                 policy.sample_z()
 
-            if n_steps_total > self.num_train_itr:
-                self.training = False
+            self.itr += 1
 
         return paths, n_steps_total
 

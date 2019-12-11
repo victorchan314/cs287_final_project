@@ -31,7 +31,7 @@ class MlpModel(DynamicsModel):
         self.hidden_layer_size = hidden_layer_size
         self.learning_rate = learning_rate
 
-        self.state = torch.from_numpy(self.reset()).float()
+        self.state = torch.from_numpy(self.reset()[np.newaxis, :]).float()
 
         self.reward_dim = 1
         #terminal_dim = 1
@@ -56,7 +56,7 @@ class MlpModel(DynamicsModel):
         return next_state, reward, terminal, env_info
 
     def step(self, action):
-        action = torch.from_numpy(action).float()
+        action = torch.from_numpy(action[np.newaxis, :]).float()
         next_state, reward, terminal, env_info = self._forward(self.state, action)
         self.state = next_state
 
