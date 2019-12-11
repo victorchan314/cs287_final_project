@@ -15,6 +15,9 @@
         "num_steps_per_eval": 60,
         "max_path_length": 20,
         "reward_scale": 100.0,
-        "kl_lambda": 0.1
+        "kl_lambda": 0.1,
+        "dyna": "True",
+        "dyna_switch_iter": 10,
+        "dyna_tandem_train": "True"
     }
 }
