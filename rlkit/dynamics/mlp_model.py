@@ -31,7 +31,7 @@ class MlpModel(DynamicsModel):
         self.hidden_layer_size = hidden_layer_size
         self.learning_rate = learning_rate
 
-        self.state = self.reset()
+        self.state = torch.from_numpy(self.reset()).float()
 
         self.reward_dim = 1
         #terminal_dim = 1
@@ -44,8 +44,8 @@ class MlpModel(DynamicsModel):
         self.net_optimizer = optimizer_class(self.net.parameters(), lr=learning_rate)
 
     def _forward(self, state, action):
-        s = torch.from_numpy(state).float()
-        a = torch.from_numpy(action).float()
+        s = state
+        a = action
         output = self.net(s, a)
         next_state = output[:, :-self.reward_dim]
         reward = output[:, -self.reward_dim:]
@@ -56,16 +56,17 @@ class MlpModel(DynamicsModel):
         return next_state, reward, terminal, env_info
 
     def step(self, action):
+        action = torch.from_numpy(action).float()
         next_state, reward, terminal, env_info = self._forward(self.state, action)
         self.state = next_state
 
         return next_state, reward, terminal, env_info
 
     def train(self, paths):
-        states = paths["observations"]
-        actions = paths["actions"]
-        rewards = paths["rewards"]
-        next_states = paths["next_observations"]
+        states = torch.from_numpy(paths["observations"]).float()
+        actions = torch.from_numpy(paths["actions"]).float()
+        rewards = torch.from_numpy(paths["rewards"]).float()
+        next_states = torch.from_numpy(paths["next_observations"]).float()
         terminals = paths["terminals"]
 
         next_state_preds, reward_preds, terminal_preds, env_infos = self._forward(states, actions)
