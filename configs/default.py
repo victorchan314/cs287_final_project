@@ -41,6 +41,12 @@ default_config = dict(
         num_exp_traj_eval=1, # how many exploration trajs to collect before beginning posterior sampling at test time
         recurrent=False, # recurrent or permutation-invariant encoder
         dump_eval_paths=False, # whether to save evaluation trajectories
+        dyna=False,
+        dyna_num_train_itr=50,
+        dyna_num_train_steps_per_itr=50,
+        dyna_tandem_train=False,
+        dyna_n_layers=3,
+        dyna_hidden_layer_size=64,
     ),
     util_params=dict(
         base_log_dir='output',

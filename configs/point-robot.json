@@ -16,7 +16,7 @@
         "max_path_length": 20,
         "reward_scale": 100.0,
         "kl_lambda": 0.1,
-        "dyna": false,
+        "dyna": true,
         "dyna_num_train_itr": 50,
         "dyna_num_train_steps_per_itr": 50,
         "dyna_tandem_train": false,

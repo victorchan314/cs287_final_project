@@ -97,6 +97,14 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
         self.render_eval_paths = render_eval_paths
         self.dump_eval_paths = dump_eval_paths
         self.plotter = plotter
+        
+        self.dyna = dyna
+        self.dyna_num_train_itr = dyna_num_train_itr
+        self.dyna_num_train_steps_per_itr = dyna_num_train_steps_per_itr
+        self.dyna_tandem_train = dyna_tandem_train
+        self.dyna_n_layers = dyna_n_layers
+        self.dyna_hidden_layer_size = dyna_hidden_layer_size
+        self.dyna_learning_rate = dyna_learning_rate
 
         if dyna:
             self.sampler = DynamicsSampler(
