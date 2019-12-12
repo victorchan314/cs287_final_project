@@ -31,7 +31,7 @@ class MlpModel(DynamicsModel):
         self.hidden_layer_size = hidden_layer_size
         self.learning_rate = learning_rate
 
-        self.state = ptu.from_numpy(self.reset()[np.newaxis, :])
+        self.reset()
 
         self.reward_dim = 1
         #terminal_dim = 1
