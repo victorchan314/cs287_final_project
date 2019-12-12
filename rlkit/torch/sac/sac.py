@@ -103,6 +103,9 @@ class PEARLSoftActorCritic(MetaRLAlgorithm):
             device = ptu.device
         for net in self.networks:
             net.to(device)
+        
+        if self.dyna:
+            self.sampler.to()
 
     ##### Data handling #####
     def unpack_batch(self, batch, sparse_reward=False):

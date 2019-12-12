@@ -28,6 +28,9 @@ class DynamicsSampler(object):
     def shutdown_worker(self):
         pass
 
+    def to(self, device=None):
+        self.model.to(device)
+
     def obtain_samples(self, deterministic=False, max_samples=np.inf, max_trajs=np.inf, accum_context=True, resample=1):
         assert max_samples < np.inf or max_trajs < np.inf, "either max_samples or max_trajs must be finite"
         policy = MakeDeterministic(self.policy) if deterministic else self.policy

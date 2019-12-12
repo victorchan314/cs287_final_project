@@ -43,6 +43,12 @@ class MlpModel(DynamicsModel):
         )
         self.net_optimizer = optimizer_class(self.net.parameters(), lr=learning_rate)
 
+    def to(self, device=None):
+        if device == None:
+            device = ptu.device
+
+        self.net.to(device)
+
     def _forward(self, state, action):
         output = self.net(state, action)
         next_state = output[:, :-self.reward_dim]
