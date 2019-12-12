@@ -1,4 +1,4 @@
-from collections import OrderedDict
+
 import numpy as np
 
 import torch
@@ -36,6 +36,8 @@ class PEARLSoftActorCritic(MetaRLAlgorithm):
             soft_target_tau=1e-2,
             plotter=None,
             render_eval_paths=False,
+
+            dyna=False,
             **kwargs
     ):
         super().__init__(
@@ -64,6 +66,8 @@ class PEARLSoftActorCritic(MetaRLAlgorithm):
         self.use_information_bottleneck = use_information_bottleneck
         self.sparse_rewards = sparse_rewards
         self.use_next_obs_in_context = use_next_obs_in_context
+
+        self.dyna = dyna
 
         self.qf1, self.qf2, self.vf = nets[1:]
         self.target_vf = self.vf.copy()
