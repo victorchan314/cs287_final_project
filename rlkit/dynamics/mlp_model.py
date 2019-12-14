@@ -16,6 +16,7 @@ class MlpModel(DynamicsModel):
             hidden_layer_size=64,
             optimizer_class=optim.Adam,
             learning_rate=1e-3,
+            reward_weight=1,
             **kwargs
     ):
         super().__init__(env=env, **kwargs)
@@ -30,6 +31,7 @@ class MlpModel(DynamicsModel):
         self.n_layers = n_layers
         self.hidden_layer_size = hidden_layer_size
         self.learning_rate = learning_rate
+        self.reward_weight = reward_weight
 
         self.reset()
 
@@ -79,6 +81,6 @@ class MlpModel(DynamicsModel):
         next_state_preds, reward_preds, terminal_preds, env_infos = self._forward(states, actions)
         self.net_optimizer.zero_grad()
 
-        net_loss = torch.mean((next_state_preds - next_states) ** 2) + torch.mean((reward_preds - rewards) ** 2)
+        net_loss = torch.mean((next_state_preds - next_states) ** 2) + self.reward_weight * torch.mean((reward_preds - rewards) ** 2)
         net_loss.backward()
         self.net_optimizer.step()
