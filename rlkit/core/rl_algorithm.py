@@ -248,7 +248,8 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
             paths, n_samples = self.sampler.obtain_samples(max_samples=num_samples - num_transitions,
                                                                 max_trajs=update_posterior_rate,
                                                                 accum_context=False,
-                                                                resample=resample_z_rate)
+                                                                resample=resample_z_rate,
+                                                                testing=False)
             num_transitions += n_samples
             self.replay_buffer.add_paths(self.task_idx, paths)
             if add_to_enc_buffer:
@@ -383,7 +384,7 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
         num_transitions = 0
         num_trajs = 0
         while num_transitions < self.num_steps_per_eval:
-            path, num = self.sampler.obtain_samples(deterministic=self.eval_deterministic, max_samples=self.num_steps_per_eval - num_transitions, max_trajs=1, accum_context=True)
+            path, num = self.sampler.obtain_samples(deterministic=self.eval_deterministic, max_samples=self.num_steps_per_eval - num_transitions, max_trajs=1, accum_context=True, testing=True)
             paths += path
             num_transitions += num
             num_trajs += 1
@@ -434,7 +435,8 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
             self.agent.clear_z()
             prior_paths, _ = self.sampler.obtain_samples(deterministic=self.eval_deterministic, max_samples=self.max_path_length * 20,
                                                         accum_context=False,
-                                                        resample=1)
+                                                        resample=1,
+                                                        testing=True)
             logger.save_extra_data(prior_paths, path='eval_trajectories/prior-epoch{}'.format(epoch))
 
         ### train tasks
@@ -453,7 +455,8 @@ class MetaRLAlgorithm(metaclass=abc.ABCMeta):
                 p, _ = self.sampler.obtain_samples(deterministic=self.eval_deterministic, max_samples=self.max_path_length,
                                                         accum_context=False,
                                                         max_trajs=1,
-                                                        resample=np.inf)
+                                                        resample=np.inf,
+                                                        testing=True)
                 paths += p
 
             if self.sparse_rewards:

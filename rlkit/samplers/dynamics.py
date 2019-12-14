@@ -31,14 +31,16 @@ class DynamicsSampler(object):
     def to(self, device=None):
         self.model.to(device)
 
-    def obtain_samples(self, deterministic=False, max_samples=np.inf, max_trajs=np.inf, accum_context=True, resample=1):
+    def obtain_samples(self, deterministic=False, max_samples=np.inf, max_trajs=np.inf, accum_context=True, resample=1, testing=False):
         assert max_samples < np.inf or max_trajs < np.inf, "either max_samples or max_trajs must be finite"
         policy = MakeDeterministic(self.policy) if deterministic else self.policy
         paths = []
         n_steps_total = 0
         n_trajs = 0
         while n_steps_total < max_samples and n_trajs < max_trajs:
-            if self.itr <= self.num_train_itr:
+            if testing:
+                path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
+            elif self.itr <= self.num_train_itr:
                 for i in range(self.num_train_steps_per_itr):
                     path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
                     self.model.train(path)
