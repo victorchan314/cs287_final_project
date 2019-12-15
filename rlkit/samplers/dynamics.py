@@ -10,7 +10,7 @@ class DynamicsSampler(object):
     A sampler that uses samples to learn a dynamics model
     before using the dynamics model to generate samples.
     """
-    def __init__(self, env, policy, max_path_length, num_train_itr=50, num_train_steps_per_itr=50, tandem_train=True, **kwargs):
+    def __init__(self, env, policy, max_path_length, num_train_itr=500, num_train_steps_per_itr=50, tandem_train=True, **kwargs):
         self.env = env
         self.policy = policy
 
@@ -37,13 +37,19 @@ class DynamicsSampler(object):
         paths = []
         n_steps_total = 0
         n_trajs = 0
+
+        if self.itr <= self.num_train_itr:
+            if self.tandem_train:
+                self._train(policy, accum_context)
+                self.itr += 1
+            else:
+                for _ in range(self.num_train_itr):
+                    self._train(policy, accum_context)
+                    self.itr += 1
+
         while n_steps_total < max_samples and n_trajs < max_trajs:
             if testing:
                 path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
-            elif self.itr <= self.num_train_itr:
-                for i in range(self.num_train_steps_per_itr):
-                    path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
-                    self.model.train(path)
             else:
                 path = rollout(self.model, policy, max_path_length=self.max_path_length, accum_context=accum_context)
 
@@ -56,7 +62,10 @@ class DynamicsSampler(object):
             if n_trajs % resample == 0:
                 policy.sample_z()
 
-            self.itr += 1
-
         return paths, n_steps_total
+
+    def _train(self, policy, accum_context):
+        for i in range(self.num_train_steps_per_itr):
+            path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)
+            self.model.train(path)
 
