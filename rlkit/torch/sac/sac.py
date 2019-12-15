@@ -295,6 +295,12 @@ class PEARLSoftActorCritic(MetaRLAlgorithm):
                 ptu.get_numpy(policy_log_std),
             ))
 
+            if self.dyna:
+                transition_model_loss, reward_model_loss, net_loss = self.sampler.get_losses()
+                self.eval_statistics["Dyna transition model loss"] = ptu.get_numpy(transition_model_loss)
+                self.eval_statistics["Dyna reward model loss"] = ptu.get_numpy(reward_model_loss)
+                self.eval_statistics["Dyna network loss"] = ptu.get_numpy(net_loss)
+
     def get_epoch_snapshot(self, epoch):
         # NOTE: overriding parent method which also optionally saves the env
         snapshot = OrderedDict(

@@ -64,6 +64,9 @@ class DynamicsSampler(object):
 
         return paths, n_steps_total
 
+    def get_losses(self):
+        return self.model.transition_model_loss, self.model.reward_model_loss, self.model.net_loss
+
     def _train(self, policy, accum_context):
         for i in range(self.num_train_steps_per_itr):
             path = rollout(self.env, policy, max_path_length=self.max_path_length, accum_context=accum_context)

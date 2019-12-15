@@ -81,6 +81,8 @@ class MlpModel(DynamicsModel):
         next_state_preds, reward_preds, terminal_preds, env_infos = self._forward(states, actions)
         self.net_optimizer.zero_grad()
 
-        net_loss = torch.mean((next_state_preds - next_states) ** 2) + self.reward_weight * torch.mean((reward_preds - rewards) ** 2)
-        net_loss.backward()
+        self.transition_model_loss = torch.mean((next_state_preds - next_states) ** 2)
+        self.reward_model_loss = torch.mean((reward_preds - rewards) ** 2)
+        self.net_loss = self.transition_model_loss + self.reward_weight * self.reward_model_loss
+        self.net_loss.backward()
         self.net_optimizer.step()
